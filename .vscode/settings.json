@@ -6,5 +6,11 @@
     "editor.codeActionsOnSave": [
         "source.formatDocument",
         "source.fixAll.eslint"
-    ]
+    ],
+    "editor.quickSuggestions": {
+        "strings": true
+    },
+    "files.associations": {
+        "*.css": "tailwindcss"
+    }
 }
