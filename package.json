@@ -8,7 +8,8 @@
         "start": "next start",
         "lint": "next lint",
         "prettier": "npx prettier . --check",
-        "prettier:fix": "npm run prettier -- --write"
+        "prettier:fix": "npm run prettier -- --write",
+        "compile": "next experimental-compile"
     },
     "dependencies": {
         "better-sqlite3": "^9.3.0",

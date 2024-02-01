@@ -1,13 +1,23 @@
-import { getAllUserNames } from "@/db";
+import { getAllUserNames, getAllUsers } from "@/db";
 
 export default async function Home() {
-    let userNames = getAllUserNames();
     return (
         <main>
-            <p className="font-mono font-bold">hello world</p>
+            <p className="font-bold">hello world</p>
+
+            <p className="font-mono">getAllUserNames():</p>
             <ol>
-                {userNames.map((name, index) => (
+                {getAllUserNames().map((name, index) => (
                     <li key={index}>{name}</li>
+                ))}
+            </ol>
+
+            <p className="font-mono">getAllUsers():</p>
+            <ol>
+                {getAllUsers().map((user, index) => (
+                    <li key={index}>
+                        {user.name}: {user.email ?? "email is null"}
+                    </li>
                 ))}
             </ol>
         </main>
