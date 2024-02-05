@@ -12,5 +12,8 @@
     },
     "files.associations": {
         "*.css": "tailwindcss"
+    },
+    "[dockerfile]": {
+        "editor.defaultFormatter": "ms-azuretools.vscode-docker"
     }
 }
