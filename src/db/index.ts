@@ -17,11 +17,23 @@ let migrationFiles = readdirSync(migrationsDir).filter((entry) =>
     entry.endsWith(".sql"),
 );
 
-let databasePath = path.join(process.cwd(), "db.sqlite3");
+// Sanity check that at least one migration file exists
+if (migrationFiles.length < 1) {
+    throw new Error("No migration files found. Ensure the cwd is properly set");
+}
+
+let databasePath = process.env.DATABASE_URL?.split("sqlite3:")[1];
+if (typeof databasePath !== "string") {
+    databasePath = path.join(process.cwd(), "db.sqlite3");
+}
+
 if (!existsSync(databasePath)) {
     throw new Error("Database not instantiated");
 }
-const db = new Database(databasePath);
+
+const db = new Database(databasePath, {
+    fileMustExist: true,
+});
 
 // Check that all migrations have been applied (sanity check upon first db use)
 const stmt = db.prepare(`
