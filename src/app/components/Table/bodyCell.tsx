@@ -1,17 +1,12 @@
-// PasteTableBodyCell.jsx
 import React, { CSSProperties, ReactNode } from "react";
 
-interface PasteTableBodyCellProps {
+interface TableBodyCellProps {
     width: string;
     align: CSSProperties["textAlign"];
     children: ReactNode;
 }
 
-function PasteTableBodyCell({
-    width,
-    align,
-    children,
-}: PasteTableBodyCellProps) {
+function TableBodyCell({ width, align, children }: TableBodyCellProps) {
     return (
         <td
             style={{
@@ -32,4 +27,4 @@ function PasteTableBodyCell({
     );
 }
 
-export default PasteTableBodyCell;
+export default TableBodyCell;

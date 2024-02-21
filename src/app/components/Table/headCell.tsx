@@ -1,17 +1,12 @@
-// PasteTableHeadCell.jsx
 import React, { CSSProperties, ReactNode } from "react";
 
-interface PasteTableHeadCellProps {
+interface TableHeadCellProps {
     width: string;
     align: CSSProperties["textAlign"];
     children: ReactNode;
 }
 
-function PasteTableHeadCell({
-    width,
-    align,
-    children,
-}: PasteTableHeadCellProps) {
+function TableHeadCell({ width, align, children }: TableHeadCellProps) {
     return (
         <th
             style={{
@@ -35,4 +30,4 @@ function PasteTableHeadCell({
     );
 }
 
-export default PasteTableHeadCell;
+export default TableHeadCell;

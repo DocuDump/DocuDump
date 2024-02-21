@@ -1,9 +1,10 @@
 "use client";
 import React, { useState } from "react";
-import PasteTableHeadCell from "../components/Table/headCell";
-import PasteTableBodyCell from "../components/Table/bodyCell";
+import TableHeadCell from "../components/Table/headCell";
+import TableBodyCell from "../components/Table/bodyCell";
 
 const Dashboard = () => {
+    //hard-coded pastes
     const pastes = [
         {
             name: "First Paste",
@@ -32,6 +33,7 @@ const Dashboard = () => {
     ];
 
     const handlePasteClick = (pasteName: String) => {
+        //Todo #10: Create view page for specifc paste. User can navigate there through this click
         alert(`Clicked on ${pasteName}`);
     };
 
@@ -40,40 +42,40 @@ const Dashboard = () => {
             <table style={{ width: "100%", borderCollapse: "collapse" }}>
                 <thead>
                     <tr>
-                        <PasteTableHeadCell width="40%" align="left">
+                        <TableHeadCell width="40%" align="left">
                             Name
-                        </PasteTableHeadCell>
-                        <PasteTableHeadCell width="20%" align="center">
+                        </TableHeadCell>
+                        <TableHeadCell width="20%" align="center">
                             Type
-                        </PasteTableHeadCell>
-                        <PasteTableHeadCell width="20%" align="center">
+                        </TableHeadCell>
+                        <TableHeadCell width="20%" align="center">
                             Publication Date
-                        </PasteTableHeadCell>
-                        <PasteTableHeadCell width="20%" align="center">
+                        </TableHeadCell>
+                        <TableHeadCell width="20%" align="center">
                             Expiration Date
-                        </PasteTableHeadCell>
+                        </TableHeadCell>
                     </tr>
                 </thead>
                 <tbody>
                     {pastes.map((paste, index) => (
                         <tr key={index}>
-                            <PasteTableBodyCell width="40%" align="left">
+                            <TableBodyCell width="40%" align="left">
                                 <a
                                     href="#"
                                     onClick={() => handlePasteClick(paste.name)}
                                 >
                                     {paste.name}
                                 </a>
-                            </PasteTableBodyCell>
-                            <PasteTableBodyCell width="20%" align="center">
+                            </TableBodyCell>
+                            <TableBodyCell width="20%" align="center">
                                 {paste.type}
-                            </PasteTableBodyCell>
-                            <PasteTableBodyCell width="20%" align="center">
+                            </TableBodyCell>
+                            <TableBodyCell width="20%" align="center">
                                 {paste.pub_date}
-                            </PasteTableBodyCell>
-                            <PasteTableBodyCell width="20%" align="center">
+                            </TableBodyCell>
+                            <TableBodyCell width="20%" align="center">
                                 {paste.exp_date}
-                            </PasteTableBodyCell>
+                            </TableBodyCell>
                         </tr>
                     ))}
                 </tbody>
