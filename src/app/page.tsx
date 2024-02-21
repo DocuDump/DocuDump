@@ -1,6 +1,6 @@
 import { getAllUserNames, getAllUsers } from "@/db";
 
-export default async function Home() {
+function Home() {
     return (
         <main>
             <p className="font-bold">hello world</p>
@@ -23,3 +23,5 @@ export default async function Home() {
         </main>
     );
 }
+
+export default Home;
