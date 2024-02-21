@@ -5,7 +5,7 @@ import FileTab from "./filetab";
 import PasteTab from "./pastetab";
 import URLTab from "./urltab";
 
-function Landing() {
+function Home() {
     const [activeTab, setActiveTab] = useState("File");
 
     const changeTab = (tab: string) => {
@@ -41,4 +41,4 @@ function Landing() {
     );
 }
 
-export default Landing;
+export default Home;

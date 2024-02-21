@@ -13,7 +13,7 @@ function PasteTab() {
                 <select
                     value={syntaxHighlight}
                     onChange={(e) => setSyntaxHighlight(e.target.value)}
-                    className="rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+                    className="rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm outline-none"
                 >
                     <option value="Python">Python</option>
                     <option value="Java">Java</option>
@@ -30,7 +30,7 @@ function PasteTab() {
                     onChange={(e) => {
                         setPasteText(e.target.value);
                     }}
-                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+                    className="w-full rounded-lg border border-gray-300 bg-gray-50 bg-transparent p-2.5 pl-2 transition-colors duration-200 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                 ></textarea>
             </div>
             <Settings />

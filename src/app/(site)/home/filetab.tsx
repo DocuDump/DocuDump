@@ -26,13 +26,9 @@ function FileTab() {
         }
     };
 
-    // Dummy function for now, while eventually actually make API call
-    const handleSubmit = async () => {
-        console.log("File submitted successfully!");
-    };
-
     return (
         <div>
+            {/* Just here temporarily to make sure file upload works, will want to eventually replace with progress bar*/}
             <div className="mb-6 flex w-full justify-center">
                 {file && (
                     <div
@@ -60,7 +56,12 @@ function FileTab() {
                     </div>
                 )}
             </div>
-            <div onDragOver={handleDragOver} onDrop={handleDrop}>
+
+            <div
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+                className="mb-8"
+            >
                 <label
                     htmlFor="dropzone-file"
                     className="flex h-64 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50"
