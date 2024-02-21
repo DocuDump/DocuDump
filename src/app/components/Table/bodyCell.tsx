@@ -17,7 +17,6 @@ function PasteTableBodyCell({
             style={{
                 textAlign: align,
                 padding: "1.5rem",
-                fontSize: "1rem",
                 borderBottom: "1px solid lightgray",
             }}
         >
@@ -25,8 +24,6 @@ function PasteTableBodyCell({
                 style={{
                     display: "inline-block",
                     width: width,
-                    color: "text",
-                    verticalAlign: "middle",
                 }}
             >
                 {children}

@@ -23,15 +23,10 @@ function PasteTableHeadCell({
         >
             <div
                 style={{
-                    position: "relative",
                     textAlign: align,
-                    color: "secondary",
-                    opacity: 0.7,
-                    fontSize: "xxs",
+                    opacity: 0.8,
                     fontWeight: "bold",
                     textTransform: "uppercase",
-                    cursor: "default",
-                    userSelect: "auto",
                 }}
             >
                 {children}
