@@ -7,6 +7,8 @@ function PasteTab() {
     const [pasteText, setPasteText] = useState("");
     const [syntaxHighlight, setSyntaxHighlight] = useState("None");
 
+    // TODO: #14 - Add syntax highlighting and line numbers in textarea
+
     return (
         <div className="space-y-4">
             <div className="text-right">
@@ -17,7 +19,6 @@ function PasteTab() {
                 >
                     <option value="Python">Python</option>
                     <option value="Java">Java</option>
-                    {/* Add more options as needed */}
                 </select>
             </div>
 

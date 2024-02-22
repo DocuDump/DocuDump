@@ -2,8 +2,7 @@
 
 import Settings from "./settings";
 import { useState } from "react";
-import { BsCheckCircle } from "react-icons/bs";
-import { BsXCircle } from "react-icons/bs";
+import FileUploadLogo from "./logos/fileupload";
 
 function FileTab() {
     const [file, setFile] = useState<File | null>(null);
@@ -26,9 +25,13 @@ function FileTab() {
         }
     };
 
+    function formatFileSizeInMiB(bytes: number) {
+        const bytesPerMiB = 1000 * 1000;
+        return (bytes / bytesPerMiB).toFixed(2);
+    }
+
     return (
         <div>
-            {/* Just here temporarily to make sure file upload works, will want to eventually replace with progress bar*/}
             <div className="mb-6 flex w-full justify-center">
                 {file && (
                     <div
@@ -37,18 +40,13 @@ function FileTab() {
                         }
                     >
                         <div className="flex items-center gap-4">
-                            {file.size > 1000000000 ? (
-                                <BsXCircle className="text-5xl text-red-500" />
-                            ) : (
-                                <BsCheckCircle className="text-5xl text-green-500" />
-                            )}
                             <div>
-                                <p className="w-56 truncate text-lg font-medium text-gray-900 dark:text-white">
+                                <p className="w-96 truncate text-lg font-medium text-gray-900 dark:text-white">
                                     {file?.name}
                                 </p>
                                 <p className="text-sm text-gray-500 dark:text-gray-400">
                                     {file
-                                        ? `${(file.size / 1000000).toFixed(2)} MB`
+                                        ? `${formatFileSizeInMiB(file.size)} MB`
                                         : null}
                                 </p>
                             </div>
@@ -67,21 +65,7 @@ function FileTab() {
                     className="flex h-64 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50"
                 >
                     <div className="flex flex-col items-center justify-center pb-6 pt-5">
-                        <svg
-                            aria-hidden="true"
-                            className="mb-3 h-10 w-10 text-gray-400"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                            ></path>
-                        </svg>
+                        <FileUploadLogo />
                         <p className="mb-2 text-sm text-gray-500">
                             <span className="font-semibold">
                                 Click to upload
@@ -97,6 +81,11 @@ function FileTab() {
                     />
                 </label>
             </div>
+            {file && (
+                <button className="h-10 w-full rounded-lg bg-blue-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 sm:w-auto">
+                    Upload
+                </button>
+            )}
             <Settings />
         </div>
     );
