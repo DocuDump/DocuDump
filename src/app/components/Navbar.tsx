@@ -1,14 +1,38 @@
+import Link from "next/link";
+import { IoSettingsSharp } from "react-icons/io5";
+import { MdAccountCircle } from "react-icons/md";
+
 function Navbar() {
     return (
-        // <nav class=""
-        <div className="h-22 inset-x-0 top-0 bg-blue-500 shadow-lg">
-            <img src="../favicon.ico" alt="TempLogo" className="h-16" />
-            <p className="text-white">Hi</p>
+        <nav className="inset-x-0 top-0 flex h-20 items-center justify-between bg-blue-500 text-white shadow-sm">
+            <div className="pl-8">
+                {/* TODO - 20: Add a logo */}
 
-            {/* <p className="inset-x-0 top-0 text-center text-8xl font-bold text-green-700">
-            Navbar
-        </p> */}
-        </div>
+                <Link
+                    href="/home"
+                    className="text-xl font-semibold hover:text-gray-300"
+                >
+                    DocuDump
+                </Link>
+            </div>
+            <div className="flex items-center">
+                <Link
+                    href="#"
+                    className="rounded bg-white px-4 py-2 font-bold text-blue-500 hover:bg-blue-700 hover:text-gray-200"
+                >
+                    Log in
+                </Link>
+                <Link href="#" className="pl-4 hover:text-gray-200 md:pl-10">
+                    <IoSettingsSharp size="36" />
+                </Link>
+                <Link
+                    href="/dashboard"
+                    className="px-4 hover:text-gray-200 md:px-10"
+                >
+                    <MdAccountCircle size="36" />
+                </Link>
+            </div>
+        </nav>
     );
 }
 
