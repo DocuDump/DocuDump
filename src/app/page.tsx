@@ -1,8 +1,10 @@
 import { getAllUserNames, getAllUsers } from "@/db";
+import Navbar from "./components/Navbar";
 
 export default async function Home() {
     return (
         <main>
+            <Navbar />
             <p className="font-bold">hello world</p>
             <p className="font-mono">getAllUserNames():</p>
             <ol>
