@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.icon-base {
+    width: 2.25rem;
+    height: 2.25rem; /* Default size */
+}
+
+@media (max-width: 768px) {
+    .icon-base {
+        width: 1.5rem; /* Smaller screens */
+        height: 1.5rem; /* Smaller screens */
+    }
+}

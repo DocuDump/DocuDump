@@ -4,32 +4,32 @@ import { MdAccountCircle } from "react-icons/md";
 
 function Navbar() {
     return (
-        <nav className="inset-x-0 top-0 flex h-20 items-center justify-between bg-blue-500 text-white shadow-sm">
+        <nav className="inset-x-0 top-0 flex h-16 items-center justify-between bg-blue-500 text-white shadow-sm md:h-20">
             <div className="px-4 md:px-8">
                 {/* TODO - 20: Add a logo */}
 
                 <Link
                     href="/home"
-                    className="text-base font-semibold hover:text-gray-300 md:text-xl"
+                    className="text-lg font-semibold hover:text-gray-300 md:text-2xl"
                 >
                     DocuDump
                 </Link>
             </div>
-            <div className="flex items-center justify-between gap-2 md:gap-8">
+            <div className="flex items-center justify-between gap-3 md:gap-8">
                 <Link
                     href="#"
-                    className="rounded bg-white px-2 py-1.5 font-bold text-blue-500 hover:bg-blue-700 hover:text-gray-200 md:px-4 md:py-2"
+                    className="rounded bg-white px-1.5 py-1 text-sm font-bold text-blue-500 hover:bg-blue-700 hover:text-gray-200 md:px-4 md:py-2 md:text-lg"
                 >
                     Log in
                 </Link>
                 <Link href="#" className=" hover:text-gray-200 ">
-                    <IoSettingsSharp size="36" />
+                    <IoSettingsSharp className="icon-base" />
                 </Link>
                 <Link
                     href="/dashboard"
                     className="pr-3 hover:text-gray-200 md:pr-6 "
                 >
-                    <MdAccountCircle size="36" />
+                    <MdAccountCircle className="icon-base" />
                 </Link>
             </div>
         </nav>
