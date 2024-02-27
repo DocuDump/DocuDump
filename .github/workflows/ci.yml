@@ -27,7 +27,7 @@ jobs:
             - run: ./lint.sh
 
     build-docker-image:
-        name: Build Docker image for ${{ github.ref_name }}
+        name: Build and push Docker image
         runs-on: ubuntu-22.04
         if: github.event_name == 'push'
         concurrency:
