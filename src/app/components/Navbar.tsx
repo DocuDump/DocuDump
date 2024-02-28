@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { IoSettingsSharp } from "react-icons/io5";
 import { MdAccountCircle } from "react-icons/md";
+import styles from "./Navbar.module.css";
 
 function Navbar() {
     return (
@@ -22,14 +23,14 @@ function Navbar() {
                 >
                     Log in
                 </Link>
-                <Link href="#" className=" hover:text-gray-200 ">
-                    <IoSettingsSharp className="icon-base" />
+                <Link href="#" className="hover:text-gray-200">
+                    <IoSettingsSharp className={styles.iconBase} />
                 </Link>
                 <Link
                     href="/dashboard"
-                    className="pr-3 hover:text-gray-200 md:pr-6 "
+                    className="pr-3 hover:text-gray-200 md:pr-6"
                 >
-                    <MdAccountCircle className="icon-base" />
+                    <MdAccountCircle className={styles.iconBase} />
                 </Link>
             </div>
         </nav>
