@@ -1,0 +1,11 @@
+.iconBase {
+    width: 2.25rem;
+    height: 2.25rem;
+}
+
+@media (max-width: 768px) {
+    .iconBase {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+}
