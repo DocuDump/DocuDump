@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import Edit from "@/app/components/edit";
+import EditModal from "@/app/components/edit";
 import Modal from "react-modal";
 
 const Dashboard = () => {
@@ -114,7 +114,7 @@ const Dashboard = () => {
                     ))}
                 </tbody>
             </table>
-            {selectedPaste && <Edit paste={selectedPaste} />}
+            {selectedPaste && <EditModal paste={selectedPaste} />}
         </div>
     );
 };

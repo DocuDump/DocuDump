@@ -15,7 +15,7 @@ interface EditProps {
     };
 }
 
-const Edit: React.FC<EditProps> = ({ paste }) => {
+const EditModal: React.FC<EditProps> = ({ paste }) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [pasteData, setPasteData] = useState<PasteData>({});
 
@@ -121,4 +121,4 @@ const Edit: React.FC<EditProps> = ({ paste }) => {
     );
 };
 
-export default Edit;
+export default EditModal;
