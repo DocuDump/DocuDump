@@ -1,8 +1,19 @@
 "use client";
 import React, { useState } from "react";
+import Edit from "../edit/page";
+import Modal from "react-modal";
 
 const Dashboard = () => {
+    Modal.setAppElement("body");
+    const [selectedPaste, setSelectedPaste] = useState<{
+        title: string;
+        type: string;
+        pub_date: string;
+        exp_date: string;
+    } | null>(null);
+
     //hard-coded pastes
+    //change to get all the pastes for the given user
     const pastes = [
         {
             title: "First Paste",
@@ -31,8 +42,9 @@ const Dashboard = () => {
     ];
 
     const handlePasteClick = (pasteName: string) => {
-        //Todo #10: Create view page for specifc paste. User can navigate there through this click
-        alert(`Clicked on ${pasteName}`);
+        setSelectedPaste(
+            pastes.find((paste) => paste.title === pasteName) || null,
+        );
     };
 
     return (
@@ -81,7 +93,6 @@ const Dashboard = () => {
                                 style={{ width: "40%" }}
                             >
                                 <a
-                                    href="#"
                                     onClick={() =>
                                         handlePasteClick(paste.title)
                                     }
@@ -103,6 +114,7 @@ const Dashboard = () => {
                     ))}
                 </tbody>
             </table>
+            {selectedPaste && <Edit paste={selectedPaste} />}
         </div>
     );
 };
