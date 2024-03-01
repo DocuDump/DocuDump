@@ -3,12 +3,8 @@ import { shortenURL } from "@/app/actions/shortenurl";
 
 import { useFormState } from "react-dom";
 
-const initialState = {
-    message: "",
-};
-
 export default function URLTab() {
-    const [state, formAction] = useFormState(shortenURL, initialState);
+    const [shortcode, formAction] = useFormState(shortenURL, null);
     return (
         <form action={formAction}>
             <div className="mb-10">
@@ -58,8 +54,8 @@ export default function URLTab() {
             >
                 Shorten
             </button>
-            {state?.message && (
-                <p className="mt-6 text-3xl">Generated Code: {state.message}</p>
+            {shortcode && (
+                <p className="mt-6 text-3xl">Generated Code: {shortcode}</p>
             )}
         </form>
     );

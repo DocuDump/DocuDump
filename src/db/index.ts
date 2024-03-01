@@ -189,6 +189,14 @@ export function queryShortcode(slug: string): { redirect?: Redirect } {
 }
 
 export function createShortcodeForURL(url: string): string {
+    const findRedirect = db.prepare(`
+        SELECT id FROM redirects WHERE redirect_url = ?
+    `);
+
+    const findShortcode = db.prepare(`
+        SELECT crockford_num FROM shortcodes WHERE redirect_id = ?
+    `);
+
     const insertRedirect = db.prepare(`
         INSERT INTO redirects (redirect_url)
         VALUES (?)
@@ -199,43 +207,38 @@ export function createShortcodeForURL(url: string): string {
         VALUES (?, ?, ?, ?)
     `);
 
-    let redirectId: number | BigInt;
-    let crockfordNum = 0;
+    // Start a transaction to ensure atomic operations
+    return db.transaction(() => {
+        let redirectId: number | BigInt;
+        let crockfordNum = 0;
 
-    const existingRedirect = db
-        .prepare(
-            `
-        SELECT id FROM redirects WHERE redirect_url = ?
-    `,
-        )
-        .get(url) as Redirect | undefined;
+        const existingRedirect = findRedirect.get(url) as Redirect | undefined;
 
-    db.transaction(() => {
-        if (!existingRedirect) {
+        if (existingRedirect) {
+            redirectId = existingRedirect.id;
+            const existingShortcode = findShortcode.get(redirectId) as
+                | Shortcode
+                | undefined;
+            if (existingShortcode && existingShortcode.crockford_num !== null) {
+                return crockford.encode(existingShortcode.crockford_num);
+            }
+        } else {
             const result = insertRedirect.run(url);
             redirectId = result.lastInsertRowid;
-        } else {
-            redirectId = existingRedirect.id;
         }
 
-        // Generate a unique crockford encoded number for the shortcode
         let unique = false;
         while (!unique) {
-            crockfordNum = randNum();
+            crockfordNum = randNum(4);
 
             const existingCrockford = db
-                .prepare(
-                    `
-                SELECT id FROM shortcodes WHERE crockford_num = ?
-            `,
-                )
+                .prepare(`SELECT id FROM shortcodes WHERE crockford_num = ?`)
                 .get(crockfordNum);
 
             unique = !existingCrockford;
         }
 
         insertShortcode.run(crockfordNum, null, "redirect", redirectId);
+        return crockford.encode(crockfordNum);
     })();
-
-    return crockford.encode(crockfordNum);
 }
