@@ -1,5 +1,6 @@
 import Database from "better-sqlite3";
 import { readdirSync, existsSync } from "fs";
+import * as crockford from "@/util/crockford";
 import path from "path";
 
 // TODO: load DB path from config (or default) and ensure it is valid, else die
@@ -31,7 +32,7 @@ if (!existsSync(databasePath)) {
     throw new Error("Database not instantiated");
 }
 
-const db = new Database(databasePath, {
+export const db = new Database(databasePath, {
     fileMustExist: true,
 });
 
@@ -54,7 +55,7 @@ for (const migrationFile of migrationFiles) {
 const isString = (x: any): x is string => typeof x === "string";
 
 // TODO: remove this function
-function getAllUserNames(): string[] {
+export function getAllUserNames(): string[] {
     const stmt = db.prepare(`
         SELECT name FROM users
     `);
@@ -65,7 +66,7 @@ function getAllUserNames(): string[] {
 }
 
 // TODO: remove this function
-function getAllUsers() {
+export function getAllUsers() {
     const stmt = db.prepare(`
         SELECT id, name, email FROM users
     `);
@@ -77,4 +78,111 @@ function getAllUsers() {
     return result;
 }
 
-export { db, getAllUserNames, getAllUsers };
+export type ShortcodeType = "redirect"; // | "paste" | "file";
+
+interface Shortcode {
+    id: number;
+    crockford_num: number | null;
+    custom_slug: string | null;
+    type: ShortcodeType;
+    redirect_id: number | null;
+}
+
+interface Redirect {
+    id: number;
+    redirect_url: string;
+}
+
+function getShortcodeByCustomSlug(customSlug: string): Shortcode | null {
+    const stmt = db.prepare(`
+        SELECT
+            id, crockford_num, custom_slug, type, redirect_id
+        FROM
+            shortcodes
+        WHERE
+            custom_slug = ?
+    `);
+    const result = stmt.all(customSlug) as Shortcode[];
+
+    if (result.length >= 1) {
+        return result[0];
+    }
+
+    return null;
+}
+
+function getShortcodeByCrockfordNum(num: number): Shortcode | null {
+    if (!Number.isInteger(num) || num <= 0) {
+        throw TypeError("num must be an integer > 0");
+    }
+
+    const stmt = db.prepare(`
+        SELECT
+            id, crockford_num, custom_slug, type, redirect_id
+        FROM
+            shortcodes
+        WHERE
+            crockford_num = ?
+    `);
+    const result = stmt.all(num) as Shortcode[];
+
+    if (result.length >= 1) {
+        return result[0];
+    }
+
+    return null;
+}
+
+function getRedirectById(id: number): Redirect | null {
+    if (!Number.isInteger(id) || id <= 0) {
+        throw TypeError("id must be an integer > 0");
+    }
+
+    const stmt = db.prepare(`
+        SELECT
+            id, redirect_url
+        FROM
+            redirects
+        WHERE
+            id = ?
+    `);
+    const result = stmt.all(id) as Redirect[];
+
+    if (result.length >= 1) {
+        return result[0];
+    }
+
+    return null;
+}
+
+export function queryShortcode(slug: string): { redirect?: Redirect } {
+    // Check for custom shortcode first
+    let result = getShortcodeByCustomSlug(slug.toLowerCase());
+
+    if (!result) {
+        try {
+            let num = crockford.decode(slug);
+            result = getShortcodeByCrockfordNum(num);
+        } catch {
+            // Nom: invalid crockford num
+        }
+    }
+
+    if (!result) {
+        // Ran out of things to make of this slug
+        return {};
+    }
+
+    if (result.type === "redirect") {
+        if (!result.redirect_id) {
+            return {};
+        }
+        let redirect = getRedirectById(result.redirect_id);
+        if (!redirect) {
+            return {};
+        }
+        return { redirect };
+    }
+
+    return {};
+}

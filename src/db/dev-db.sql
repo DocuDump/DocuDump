@@ -13,7 +13,8 @@ INSERT INTO redirects (id, redirect_url) VALUES
 
 DELETE FROM shortcodes;
 INSERT INTO shortcodes (crockford_num, custom_slug, type, redirect_id) VALUES
-    (762706, NULL, "redirect", 1),
-    (822103, NULL, "redirect", 2),
-    (251069, NULL, "redirect", 3),
-    (NULL, "customurl", "redirect", 2);
+    (762706, NULL, "redirect", 1), -- Q8TJ
+    (822103, NULL, "redirect", 2), -- S2TQ
+    (251069, NULL, "redirect", 3), -- 7N5X
+    (NULL, "customurl", "redirect", 2),
+    (NULL, "githubio", "redirect", 3);
