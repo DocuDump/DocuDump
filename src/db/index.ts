@@ -1,6 +1,7 @@
 import Database from "better-sqlite3";
 import { readdirSync, existsSync } from "fs";
 import * as crockford from "@/util/crockford";
+import { randomCrockfordNumber } from "@/util/randcrockford";
 import path from "path";
 
 // TODO: load DB path from config (or default) and ensure it is valid, else die
@@ -185,4 +186,59 @@ export function queryShortcode(slug: string): { redirect?: Redirect } {
     }
 
     return {};
+}
+
+export function createShortcodeForURL(url: string): string {
+    const findRedirect = db.prepare(`
+        SELECT id FROM redirects WHERE redirect_url = ?
+    `);
+
+    const findShortcode = db.prepare(`
+        SELECT crockford_num FROM shortcodes WHERE redirect_id = ?
+    `);
+
+    const insertRedirect = db.prepare(`
+        INSERT INTO redirects (redirect_url)
+        VALUES (?)
+    `);
+
+    const insertShortcode = db.prepare(`
+        INSERT INTO shortcodes (crockford_num, custom_slug, type, redirect_id)
+        VALUES (?, ?, ?, ?)
+    `);
+
+    // Start a transaction to ensure atomic operations
+    return db.transaction(() => {
+        let redirectId: number | BigInt;
+        let crockfordNum = 0;
+
+        const existingRedirect = findRedirect.get(url) as Redirect | undefined;
+
+        if (existingRedirect) {
+            redirectId = existingRedirect.id;
+            const existingShortcode = findShortcode.get(redirectId) as
+                | Shortcode
+                | undefined;
+            if (existingShortcode && existingShortcode.crockford_num !== null) {
+                return crockford.encode(existingShortcode.crockford_num);
+            }
+        } else {
+            const result = insertRedirect.run(url);
+            redirectId = result.lastInsertRowid;
+        }
+
+        let unique = false;
+        while (!unique) {
+            crockfordNum = randomCrockfordNumber(4);
+
+            const existingCrockford = db
+                .prepare(`SELECT id FROM shortcodes WHERE crockford_num = ?`)
+                .get(crockfordNum);
+
+            unique = !existingCrockford;
+        }
+
+        insertShortcode.run(crockfordNum, null, "redirect", redirectId);
+        return crockford.encode(crockfordNum);
+    })();
 }
