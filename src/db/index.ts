@@ -1,6 +1,7 @@
 import Database from "better-sqlite3";
 import { readdirSync, existsSync } from "fs";
 import * as crockford from "@/util/crockford";
+import { randNum } from "@/util/randnum";
 import path from "path";
 
 // TODO: load DB path from config (or default) and ensure it is valid, else die
@@ -185,4 +186,56 @@ export function queryShortcode(slug: string): { redirect?: Redirect } {
     }
 
     return {};
+}
+
+export function createShortcodeForURL(url: string): string {
+    const insertRedirect = db.prepare(`
+        INSERT INTO redirects (redirect_url)
+        VALUES (?)
+    `);
+
+    const insertShortcode = db.prepare(`
+        INSERT INTO shortcodes (crockford_num, custom_slug, type, redirect_id)
+        VALUES (?, ?, ?, ?)
+    `);
+
+    let redirectId: number;
+    let crockfordNum: number;
+
+    const existingRedirect = db
+        .prepare(
+            `
+        SELECT id FROM redirects WHERE redirect_url = ?
+    `,
+        )
+        .get(url);
+
+    db.transaction(() => {
+        if (!existingRedirect) {
+            const result = insertRedirect.run(url);
+            redirectId = result.lastInsertRowid;
+        } else {
+            redirectId = existingRedirect.id;
+        }
+
+        // Generate a unique crockford encoded number for the shortcode
+        let unique = false;
+        while (!unique) {
+            crockfordNum = randNum();
+
+            const existingCrockford = db
+                .prepare(
+                    `
+                SELECT id FROM shortcodes WHERE crockford_num = ?
+            `,
+                )
+                .get(crockfordNum);
+
+            unique = !existingCrockford;
+        }
+
+        insertShortcode.run(crockfordNum, null, "redirect", redirectId);
+    })();
+
+    return crockford.encode(crockfordNum);
 }
