@@ -1,7 +1,7 @@
 import Database from "better-sqlite3";
 import { readdirSync, existsSync } from "fs";
 import * as crockford from "@/util/crockford";
-import { randNum } from "@/util/randnum";
+import { randomCrockfordNumber } from "@/util/randcrockford";
 import path from "path";
 
 // TODO: load DB path from config (or default) and ensure it is valid, else die
@@ -229,7 +229,7 @@ export function createShortcodeForURL(url: string): string {
 
         let unique = false;
         while (!unique) {
-            crockfordNum = randNum(4);
+            crockfordNum = randomCrockfordNumber(4);
 
             const existingCrockford = db
                 .prepare(`SELECT id FROM shortcodes WHERE crockford_num = ?`)
