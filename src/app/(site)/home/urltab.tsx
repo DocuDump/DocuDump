@@ -1,5 +1,5 @@
 import Settings from "@/app/(site)/home/settings";
-import { handleFormSubmit } from "@/app/(site)/home/actions/shortenaction";
+import { shortenURL } from "@/app/actions/shortenurl";
 
 import { useFormState } from "react-dom";
 
@@ -8,7 +8,7 @@ const initialState = {
 };
 
 export default function URLTab() {
-    const [state, formAction] = useFormState(handleFormSubmit, initialState);
+    const [state, formAction] = useFormState(shortenURL, initialState);
     return (
         <form action={formAction}>
             <div className="mb-10">
@@ -27,7 +27,6 @@ export default function URLTab() {
                     className="block w-full rounded-lg border border-gray-300 p-2.5 text-sm transition-colors duration-200 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                 />
             </div>
-
             <div className="mb-8">
                 <label
                     htmlFor="custom-url"
@@ -53,14 +52,15 @@ export default function URLTab() {
                 </div>
             </div>
             <Settings />
-
             <button
                 type="submit"
                 className="h-10 w-full rounded-lg bg-blue-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 sm:w-auto"
             >
                 Shorten
             </button>
-            <p>{state?.message}</p>
+            {state?.message && (
+                <p className="mt-6 text-3xl">Generated Code: {state.message}</p>
+            )}
         </form>
     );
 }

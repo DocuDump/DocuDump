@@ -199,8 +199,8 @@ export function createShortcodeForURL(url: string): string {
         VALUES (?, ?, ?, ?)
     `);
 
-    let redirectId: number;
-    let crockfordNum: number;
+    let redirectId: number | BigInt;
+    let crockfordNum = 0;
 
     const existingRedirect = db
         .prepare(
@@ -208,7 +208,7 @@ export function createShortcodeForURL(url: string): string {
         SELECT id FROM redirects WHERE redirect_url = ?
     `,
         )
-        .get(url);
+        .get(url) as Redirect | undefined;
 
     db.transaction(() => {
         if (!existingRedirect) {
