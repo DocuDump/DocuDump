@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import TableHeadCell from "../components/Table/headCell";
-import TableBodyCell from "../components/Table/bodyCell";
+import TableHeadCell from "@/app/(site)/components/Table/headCell";
+import TableBodyCell from "@/app/(site)/components/Table/bodyCell";
 
 const Dashboard = () => {
     //hard-coded pastes

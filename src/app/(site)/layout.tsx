@@ -1,5 +1,5 @@
-import Navbar from "./components/Shared/Navbar";
-import Footer from "./components/Shared/Footer";
+import Navbar from "@/app/(site)/components/Shared/Navbar";
+import Footer from "@/app/(site)/components/Shared/Footer";
 
 export default function SiteLayout({
     children,
