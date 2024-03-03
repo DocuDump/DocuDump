@@ -57,10 +57,11 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 # Copy dbmate because nextjs doesn't think we need it by default
-COPY --from=deps /app/node_modules/dbmate ./node_modules/dbmate
-COPY --from=deps /app/node_modules/@dbmate ./node_modules/@dbmate
+COPY --from=deps --chown=nextjs:nodejs /app/node_modules/dbmate ./node_modules/dbmate
+COPY --from=deps --chown=nextjs:nodejs /app/node_modules/@dbmate ./node_modules/@dbmate
+COPY --from=builder --chown=nextjs:nodejs /app/src/db/migrations /app/src/db/migrations
 
-COPY --from=builder /app/docker/docker-entrypoint.sh /sbin/docker-entrypoint.sh
+COPY --from=builder --chown=nextjs:nodejs /app/docker/docker-entrypoint.sh /sbin/docker-entrypoint.sh
 RUN chmod +x /sbin/docker-entrypoint.sh
 
 EXPOSE 3000
