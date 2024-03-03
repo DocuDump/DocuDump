@@ -20,6 +20,8 @@ cleanup() {
 trap "error" ERR
 trap "cleanup" EXIT
 
+npm run compile
+
 npm run lint
 
 npm run prettier

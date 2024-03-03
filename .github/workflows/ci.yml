@@ -14,16 +14,17 @@ jobs:
             github.repository
 
         runs-on: ubuntu-22.04
+        strategy:
+            matrix:
+                node-version: [18, 20]
+        name: Lint (Node ${{ matrix.node-version }})
 
         steps:
             - uses: actions/checkout@v4
-
             - uses: actions/setup-node@v4
               with:
-                  node-version: 20
-
+                  node-version: ${{ matrix.node-version }}
             - run: npm ci
-
             - run: ./lint.sh
 
     build-docker-image:
