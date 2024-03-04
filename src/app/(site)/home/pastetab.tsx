@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Editor from "@monaco-editor/react";
-import Settings from "./settings";
+import Settings from "@/app/(site)/home/settings";
 import { LanguageKey } from "@/app/types";
 import { languageOptions } from "@/app/constants";
 
