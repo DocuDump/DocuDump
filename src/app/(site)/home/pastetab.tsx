@@ -15,7 +15,6 @@ function PasteTab() {
     ) => {
         const newLanguage = event.target.value as LanguageKey;
         setLanguage(newLanguage);
-        setCurrentText("");
     };
 
     return (
