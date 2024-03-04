@@ -1,4 +1,4 @@
-import { LanguageKey } from "./types";
+import { LanguageKey } from "@/app/types";
 
 export const languageOptions: Record<LanguageKey, string> = {
     plaintext: "Plain Text",
