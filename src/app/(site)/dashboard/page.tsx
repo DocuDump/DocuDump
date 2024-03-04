@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import EditModal from "@/app/components/EditModal";
+import EditModal from "@/app/(site)/components/EditModal";
 import Modal from "react-modal";
 
 const Dashboard = () => {
