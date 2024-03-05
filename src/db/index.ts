@@ -188,7 +188,10 @@ export function queryShortcode(slug: string): { redirect?: Redirect } {
     return {};
 }
 
-export function createShortcodeForURL(url: string): string {
+export function createShortcodeForURL(url: string): {
+    success?: boolean;
+    message?: string;
+} {
     const findRedirect = db.prepare(`
         SELECT id FROM redirects WHERE redirect_url = ?
     `);
@@ -198,20 +201,19 @@ export function createShortcodeForURL(url: string): string {
     `);
 
     const insertRedirect = db.prepare(`
-        INSERT INTO redirects (redirect_url)
-        VALUES (?)
+        INSERT INTO redirects (redirect_url) VALUES (?)
     `);
 
     const insertShortcode = db.prepare(`
-        INSERT INTO shortcodes (crockford_num, custom_slug, type, redirect_id)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO shortcodes (crockford_num, custom_slug, type, redirect_id) VALUES (?, ?, ?, ?)
     `);
 
     // Start a transaction to ensure atomic operations
-    return db.transaction(() => {
+    const shortcode = db.transaction(() => {
         let redirectId: number | BigInt;
         let crockfordNum = 0;
 
+        // Return appropriate shortcode if redirectID exists
         const existingRedirect = findRedirect.get(url) as Redirect | undefined;
 
         if (existingRedirect) {
@@ -227,6 +229,7 @@ export function createShortcodeForURL(url: string): string {
             redirectId = result.lastInsertRowid;
         }
 
+        // Finds a unique Crockford number
         let unique = false;
         while (!unique) {
             crockfordNum = randomCrockfordNumber(4);
@@ -241,4 +244,66 @@ export function createShortcodeForURL(url: string): string {
         insertShortcode.run(crockfordNum, null, "redirect", redirectId);
         return crockford.encode(crockfordNum);
     })();
+
+    return { message: shortcode };
+}
+
+export function createCustomURL(
+    url: string,
+    customSlug: string,
+): { success?: boolean; message?: string } {
+    const findRedirect = db.prepare(`
+        SELECT id FROM redirects WHERE redirect_url = ?
+    `);
+
+    const findShortcodeByCustomSlug = db.prepare(`
+        SELECT id FROM shortcodes WHERE custom_slug = ?
+    `);
+
+    const insertRedirect = db.prepare(`
+        INSERT INTO redirects (redirect_url) VALUES (?)
+    `);
+
+    const insertShortcode = db.prepare(`
+        INSERT INTO shortcodes (custom_slug, type, redirect_id) VALUES (?, ?, ?)
+    `);
+
+    try {
+        // Start a transaction to ensure atomic operations
+        const transactionResult = db.transaction(() => {
+            let redirectId;
+
+            // Check if the customSlug already exists
+            const existingCustomSlug =
+                findShortcodeByCustomSlug.get(customSlug);
+            if (existingCustomSlug) {
+                throw new Error("Custom URL already in use");
+            }
+
+            // Check for existing redirectID, otherwise creates redirectID
+            const existingRedirect = findRedirect.get(url) as
+                | Redirect
+                | undefined;
+            if (existingRedirect) {
+                redirectId = existingRedirect.id;
+            } else {
+                const result = insertRedirect.run(url);
+                redirectId = result.lastInsertRowid;
+            }
+
+            // Now, using customSlug instead of generating a new one.
+            insertShortcode.run(customSlug, "redirect", redirectId);
+            return { success: true, message: customSlug };
+        })();
+
+        return transactionResult;
+    } catch (error) {
+        return {
+            success: false,
+            message:
+                error instanceof Error
+                    ? error.message
+                    : "An unknown error occurred",
+        };
+    }
 }

@@ -55,7 +55,13 @@ export default function URLTab() {
                 Shorten
             </button>
             {shortcode && (
-                <p className="mt-6 text-3xl">Generated Code: {shortcode}</p>
+                <p
+                    className={`mt-6 text-3xl ${shortcode.success ? "" : "text-red-500"}`}
+                >
+                    {shortcode.success
+                        ? `Generated Code: ${shortcode.message}`
+                        : shortcode.message}
+                </p>
             )}
         </form>
     );
