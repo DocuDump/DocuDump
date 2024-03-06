@@ -209,7 +209,7 @@ export function createShortcodeForURL(url: string): {
     `);
 
     // Start a transaction to ensure atomic operations
-    const shortcode = db.transaction(() => {
+    const transactionResult = db.transaction(() => {
         let redirectId: number | BigInt;
         let crockfordNum = 0;
 
@@ -222,7 +222,10 @@ export function createShortcodeForURL(url: string): {
                 | Shortcode
                 | undefined;
             if (existingShortcode && existingShortcode.crockford_num !== null) {
-                return crockford.encode(existingShortcode.crockford_num);
+                const shortcode = crockford.encode(
+                    existingShortcode.crockford_num,
+                );
+                return { success: true, message: shortcode };
             }
         } else {
             const result = insertRedirect.run(url);
@@ -242,10 +245,11 @@ export function createShortcodeForURL(url: string): {
         }
 
         insertShortcode.run(crockfordNum, null, "redirect", redirectId);
-        return crockford.encode(crockfordNum);
+        const shortcode = crockford.encode(crockfordNum);
+        return { success: true, message: shortcode };
     })();
 
-    return { message: shortcode };
+    return transactionResult;
 }
 
 export function createCustomURL(
