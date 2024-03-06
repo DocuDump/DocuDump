@@ -208,48 +208,65 @@ export function createShortcodeForURL(url: string): {
         INSERT INTO shortcodes (crockford_num, custom_slug, type, redirect_id) VALUES (?, ?, ?, ?)
     `);
 
-    // Start a transaction to ensure atomic operations
-    const transactionResult = db.transaction(() => {
-        let redirectId: number | BigInt;
-        let crockfordNum = 0;
+    try {
+        // Start a transaction to ensure atomic operations
+        const transactionResult = db.transaction(() => {
+            let redirectId: number | BigInt;
+            let crockfordNum = 0;
 
-        // Return appropriate shortcode if redirectID exists
-        const existingRedirect = findRedirect.get(url) as Redirect | undefined;
-
-        if (existingRedirect) {
-            redirectId = existingRedirect.id;
-            const existingShortcode = findShortcode.get(redirectId) as
-                | Shortcode
+            // Return appropriate shortcode if redirectID exists
+            const existingRedirect = findRedirect.get(url) as
+                | Redirect
                 | undefined;
-            if (existingShortcode && existingShortcode.crockford_num !== null) {
-                const shortcode = crockford.encode(
-                    existingShortcode.crockford_num,
-                );
-                return { success: true, message: shortcode };
+
+            if (existingRedirect) {
+                redirectId = existingRedirect.id;
+                const existingShortcode = findShortcode.get(redirectId) as
+                    | Shortcode
+                    | undefined;
+                if (
+                    existingShortcode &&
+                    existingShortcode.crockford_num !== null
+                ) {
+                    const shortcode = crockford.encode(
+                        existingShortcode.crockford_num,
+                    );
+                    return { success: true, message: shortcode };
+                }
+            } else {
+                const result = insertRedirect.run(url);
+                redirectId = result.lastInsertRowid;
             }
-        } else {
-            const result = insertRedirect.run(url);
-            redirectId = result.lastInsertRowid;
-        }
 
-        // Finds a unique Crockford number
-        let unique = false;
-        while (!unique) {
-            crockfordNum = randomCrockfordNumber(4);
+            // Finds a unique Crockford number
+            let unique = false;
+            while (!unique) {
+                crockfordNum = randomCrockfordNumber(4);
 
-            const existingCrockford = db
-                .prepare(`SELECT id FROM shortcodes WHERE crockford_num = ?`)
-                .get(crockfordNum);
+                const existingCrockford = db
+                    .prepare(
+                        `SELECT id FROM shortcodes WHERE crockford_num = ?`,
+                    )
+                    .get(crockfordNum);
 
-            unique = !existingCrockford;
-        }
+                unique = !existingCrockford;
+            }
 
-        insertShortcode.run(crockfordNum, null, "redirect", redirectId);
-        const shortcode = crockford.encode(crockfordNum);
-        return { success: true, message: shortcode };
-    })();
+            insertShortcode.run(crockfordNum, null, "redirect", redirectId);
+            const shortcode = crockford.encode(crockfordNum);
+            return { success: true, message: shortcode };
+        })();
 
-    return transactionResult;
+        return transactionResult;
+    } catch (error) {
+        return {
+            success: false,
+            message:
+                error instanceof Error
+                    ? error.message
+                    : "An unknown error occurred",
+        };
+    }
 }
 
 export function createCustomURL(
