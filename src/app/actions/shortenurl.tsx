@@ -1,11 +1,16 @@
 "use server";
 
-import { createShortcodeForURL } from "@/db/index";
+import { createShortcodeForURL, createCustomURL } from "@/db/index";
 
-export async function shortenURL(prevState: string | null, formData: FormData) {
+export async function shortenURL(
+    prevState: { success?: boolean; message?: string } | null,
+    formData: FormData,
+): Promise<{ success?: boolean; message?: string }> {
     const originalURL = formData.get("original-url") as string;
-    // TODO #33 - add custom URL support
-    // const customURL = formData.get("custom-url");
-    const result = createShortcodeForURL(originalURL);
-    return result;
+    const customURL = formData.get("custom-url") as string;
+    if (customURL) {
+        return createCustomURL(originalURL, customURL);
+    } else {
+        return createShortcodeForURL(originalURL);
+    }
 }
