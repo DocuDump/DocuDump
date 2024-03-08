@@ -1,10 +1,20 @@
 import Settings from "@/app/(site)/home/settings";
 import { shortenURL } from "@/app/actions/shortenurl";
+import { useState } from "react";
 
 import { useFormState } from "react-dom";
 
 export default function URLTab() {
+    const currentDomain = window.location.origin;
     const [shortcode, formAction] = useFormState(shortenURL, null);
+    const [isCopied, setIsCopied] = useState(false);
+
+    const copyToClipboard = (text: string) => {
+        navigator.clipboard.writeText(text);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 3000); // Reset copy status after 3 seconds so it disappears
+    };
+
     return (
         <form action={formAction}>
             <div className="mb-10">
@@ -55,14 +65,37 @@ export default function URLTab() {
                 Shorten
             </button>
             {shortcode && (
-                <p
-                    className={`mt-6 text-3xl ${shortcode.success ? "" : "text-red-500"}`}
-                >
-                    {shortcode.success
-                        ? `Generated Code: ${shortcode.message}`
-                        : shortcode.message}
-                </p>
+                <>
+                    {shortcode.success ? (
+                        <div>
+                            <button
+                                onClick={() =>
+                                    copyToClipboard(
+                                        `${currentDomain}/${shortcode.message}`,
+                                    )
+                                }
+                                className="test-sm mt-5 h-10 rounded-lg border border-blue-500 bg-transparent px-5 py-2.5 font-medium text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white focus:outline-none"
+                            >
+                                <svg
+                                    className="inline h-4 fill-current pr-4"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                >
+                                    <path d="M8 2a1 1 0 000 2h2a1 1 0 100-2H8z"></path>
+                                    <path d="M3 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v6h-4.586l1.293-1.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L10.414 13H15v3a2 2 0 01-2 2H5a2 2 0 01-2-2V5zM15 11h2a1 1 0 110 2h-2v-2z"></path>
+                                </svg>
+                                <span>{`${currentDomain}/${shortcode.message}`}</span>
+                            </button>
+                        </div>
+                    ) : (
+                        <p className="mt-6 text-3xl text-red-500">
+                            {shortcode.message}
+                        </p>
+                    )}
+                </>
             )}
+            {isCopied && <span className="text-green-500">Copied!</span>}
         </form>
     );
 }
