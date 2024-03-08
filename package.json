@@ -20,7 +20,9 @@
         "react": "^18",
         "react-dom": "^18",
         "react-icons": "^5.0.1",
-        "react-modal": "^3.16.1"
+        "react-modal": "^3.16.1",
+        "zod": "^3.22.4",
+        "zod-form-data": "^2.0.2"
     },
     "devDependencies": {
         "@types/better-sqlite3": "^7.6.9",
