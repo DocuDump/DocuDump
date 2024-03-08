@@ -16,7 +16,7 @@ jobs:
         runs-on: ubuntu-22.04
         strategy:
             matrix:
-                node-version: [18, 20]
+                node-version: [20]
         name: Lint (Node ${{ matrix.node-version }})
 
         steps:

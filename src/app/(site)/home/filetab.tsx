@@ -3,8 +3,12 @@
 import Settings from "./settings";
 import { useState } from "react";
 import FileUploadLogo from "./logos/fileupload";
+import { uploadFile } from "@/app/actions/uploadfile";
+import { useFormState } from "react-dom";
 
 function FileTab() {
+    const [state, formAction] = useFormState(uploadFile, null);
+
     const [file, setFile] = useState<File | null>(null);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,7 +35,7 @@ function FileTab() {
     }
 
     return (
-        <div>
+        <form action={formAction}>
             <div className="mb-6 flex w-full justify-center">
                 {file && (
                     <div
@@ -77,6 +81,7 @@ function FileTab() {
                         onChange={handleFileChange}
                         id="dropzone-file"
                         type="file"
+                        name="file"
                         className="hidden"
                     />
                 </label>
@@ -87,7 +92,7 @@ function FileTab() {
                 </button>
             )}
             <Settings />
-        </div>
+        </form>
     );
 }
 

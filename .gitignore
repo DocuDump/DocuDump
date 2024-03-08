@@ -38,3 +38,5 @@ next-env.d.ts
 
 # local sqlite database
 db.sqlite3
+
+/uploads/
