@@ -1,10 +1,21 @@
 import Settings from "@/app/(site)/home/settings";
 import { shortenURL } from "@/app/actions/shortenurl";
+import { useState } from "react";
+import CopyToClipboard from "@/app/(site)/home/logos/copytoclipboard";
 
 import { useFormState } from "react-dom";
 
 export default function URLTab() {
+    const currentDomain = window.location.origin;
     const [shortcode, formAction] = useFormState(shortenURL, null);
+    const [isCopied, setIsCopied] = useState(false);
+
+    const copyToClipboard = (text: string) => {
+        navigator.clipboard.writeText(text);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 3000); // Reset copy status after 3 seconds so it disappears
+    };
+
     return (
         <form action={formAction}>
             <div className="mb-10">
@@ -55,14 +66,29 @@ export default function URLTab() {
                 Shorten
             </button>
             {shortcode && (
-                <p
-                    className={`mt-6 text-3xl ${shortcode.success ? "" : "text-red-500"}`}
-                >
-                    {shortcode.success
-                        ? `Generated Code: ${shortcode.message}`
-                        : shortcode.message}
-                </p>
+                <>
+                    {shortcode.success ? (
+                        <div>
+                            <button
+                                onClick={() =>
+                                    copyToClipboard(
+                                        `${currentDomain}/${shortcode.message}`,
+                                    )
+                                }
+                                className="test-sm mt-5 h-10 rounded-lg border border-blue-500 bg-transparent px-5 py-2.5 font-medium text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white focus:outline-none"
+                            >
+                                <CopyToClipboard />
+                                <span>{`${currentDomain}/${shortcode.message}`}</span>
+                            </button>
+                        </div>
+                    ) : (
+                        <p className="mt-6 text-3xl text-red-500">
+                            {shortcode.message}
+                        </p>
+                    )}
+                </>
             )}
+            {isCopied && <span className="text-green-500">Copied!</span>}
         </form>
     );
 }
