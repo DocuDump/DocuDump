@@ -10,6 +10,8 @@ export default async function ShortcodeHandler({
 
     if (result.redirect) {
         redirect(result.redirect.redirect_url);
+    } else if (result.file) {
+        // TODO: handle result.file
     } else {
         notFound();
     }

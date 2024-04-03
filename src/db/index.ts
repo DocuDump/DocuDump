@@ -79,7 +79,7 @@ export function getAllUsers() {
     return result;
 }
 
-export type ShortcodeType = "redirect"; // | "paste" | "file";
+export type ShortcodeType = "redirect" | "file"; // | "paste";
 
 interface Shortcode {
     id: number;
@@ -87,6 +87,7 @@ interface Shortcode {
     custom_slug: string | null;
     type: ShortcodeType;
     redirect_id: number | null;
+    file_id: number | null;
 }
 
 interface Redirect {
@@ -94,10 +95,17 @@ interface Redirect {
     redirect_url: string;
 }
 
+interface FileEntry {
+    id: number;
+    sha256: string;
+    file_name: string;
+    mime_type: string;
+}
+
 function getShortcodeByCustomSlug(customSlug: string): Shortcode | null {
     const stmt = db.prepare(`
         SELECT
-            id, crockford_num, custom_slug, type, redirect_id
+            id, crockford_num, custom_slug, type, redirect_id, file_id
         FROM
             shortcodes
         WHERE
@@ -119,7 +127,7 @@ function getShortcodeByCrockfordNum(num: number): Shortcode | null {
 
     const stmt = db.prepare(`
         SELECT
-            id, crockford_num, custom_slug, type, redirect_id
+            id, crockford_num, custom_slug, type, redirect_id, file_id
         FROM
             shortcodes
         WHERE
@@ -156,7 +164,32 @@ function getRedirectById(id: number): Redirect | null {
     return null;
 }
 
-export function queryShortcode(slug: string): { redirect?: Redirect } {
+function getFileById(id: number): FileEntry | null {
+    if (!Number.isInteger(id) || id <= 0) {
+        throw TypeError("id must be an integer > 0");
+    }
+
+    const stmt = db.prepare(`
+        SELECT
+            id, sha256, file_name, mime_type
+        FROM
+            files
+        WHERE
+            id = ?
+    `);
+    const result = stmt.all(id) as FileEntry[];
+
+    if (result.length >= 1) {
+        return result[0];
+    }
+
+    return null;
+}
+
+export function queryShortcode(slug: string): {
+    redirect?: Redirect;
+    file?: FileEntry;
+} {
     // Check for custom shortcode first
     let result = getShortcodeByCustomSlug(slug.toLowerCase());
 
@@ -183,6 +216,15 @@ export function queryShortcode(slug: string): { redirect?: Redirect } {
             return {};
         }
         return { redirect };
+    } else if (result.type === "file") {
+        if (!result.file_id) {
+            return {};
+        }
+        let file = getFileById(result.file_id);
+        if (!file) {
+            return {};
+        }
+        return { file };
     }
 
     return {};
@@ -315,6 +357,88 @@ export function createCustomURL(
             // Now, using customSlug instead of generating a new one.
             insertShortcode.run(customSlug, "redirect", redirectId);
             return { success: true, message: customSlug };
+        })();
+
+        return transactionResult;
+    } catch (error) {
+        return {
+            success: false,
+            message:
+                error instanceof Error
+                    ? error.message
+                    : "An unknown error occurred",
+        };
+    }
+}
+
+export function createFileUpload(
+    fileName: string,
+    sha256: string,
+    mimeType: string,
+): { success?: boolean; message?: string } {
+    const findFileIdByHash = db.prepare(`
+        SELECT id FROM files WHERE sha256 = ?
+    `);
+
+    const findShortcodeCrockNumByFileId = db.prepare(`
+        SELECT crockford_num FROM shortcodes WHERE file_id = ?
+    `);
+
+    const insertFile = db.prepare(`
+        INSERT INTO files (sha256, file_name, mime_type) VALUES (?, ?, ?)
+    `);
+
+    const insertShortcode = db.prepare(`
+        INSERT INTO shortcodes (crockford_num, type, file_id) VALUES (?, ?, ?)
+    `);
+
+    try {
+        // Start a transaction to ensure atomic operations
+        const transactionResult = db.transaction(() => {
+            let fileId: number | BigInt;
+            let crockfordNum = 0;
+
+            // Return appropriate shortcode if redirectID exists
+            const existingFile = findFileIdByHash.get(sha256) as
+                | { id: number }
+                | undefined;
+
+            if (existingFile) {
+                fileId = existingFile.id;
+                const existingShortcode = findShortcodeCrockNumByFileId.get(
+                    fileId,
+                ) as { crockford_num: number } | undefined;
+                if (
+                    existingShortcode &&
+                    existingShortcode.crockford_num !== null
+                ) {
+                    const shortcode = crockford.encode(
+                        existingShortcode.crockford_num,
+                    );
+                    return { success: true, message: shortcode };
+                }
+            } else {
+                const result = insertFile.run(sha256, fileName, mimeType);
+                fileId = result.lastInsertRowid;
+            }
+
+            // Finds a unique Crockford number
+            let unique = false;
+            while (!unique) {
+                crockfordNum = randomCrockfordNumber(4);
+
+                const existingCrockford = db
+                    .prepare(
+                        `SELECT id FROM shortcodes WHERE crockford_num = ?`,
+                    )
+                    .get(crockfordNum);
+
+                unique = !existingCrockford;
+            }
+
+            insertShortcode.run(crockfordNum, "file", fileId);
+            const shortcode = crockford.encode(crockfordNum);
+            return { success: true, message: shortcode };
         })();
 
         return transactionResult;

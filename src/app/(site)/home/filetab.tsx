@@ -7,7 +7,7 @@ import { uploadFile } from "@/app/actions/uploadfile";
 import { useFormState } from "react-dom";
 
 function FileTab() {
-    const [state, formAction] = useFormState(uploadFile, null);
+    const [shortcode, formAction] = useFormState(uploadFile, null);
 
     const [file, setFile] = useState<File | null>(null);
 
@@ -92,6 +92,15 @@ function FileTab() {
                 </button>
             )}
             <Settings />
+            {shortcode && (
+                <p
+                    className={`mt-6 text-3xl ${shortcode.success ? "" : "text-red-500"}`}
+                >
+                    {shortcode.success
+                        ? `Generated Code: ${shortcode.message}`
+                        : shortcode.message}
+                </p>
+            )}
         </form>
     );
 }
