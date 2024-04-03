@@ -3,6 +3,7 @@
 import { createFileUpload } from "@/db/index";
 import { validateUploadFileFormData } from "@/util/formvalidation";
 import { ZodError } from "zod";
+import * as config from "@/util/config";
 import * as fs from "fs";
 import * as crypto from "crypto";
 import * as mime from "mime-types";
@@ -32,7 +33,7 @@ export async function uploadFile(
     hash.update(buffer);
     const sha256 = hash.digest("hex");
 
-    const dir = path.join(process.cwd(), "uploads", sha256.slice(0, 2));
+    const dir = path.join(config.uploadDirectory, sha256.slice(0, 2));
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
     }

@@ -1,4 +1,4 @@
-FROM node:18-alpine AS base
+FROM node:20-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -70,6 +70,7 @@ ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 ENV DATABASE_URL "sqlite3:/data/db.sqlite3"
 ENV DBMATE_MIGRATIONS_DIR "/app/src/db/migrations"
+ENV DOCUDUMP_DATA_DIR "/data"
 
 VOLUME ["/data"]
 
