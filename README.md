@@ -4,7 +4,7 @@ DocuDump is a self hosted pastebin and URL shortener focused on simplicity and e
 
 ## Getting Started - Local Development
 
-First, ensure you have Node.js v18+ and sqlite3 installed.
+First, ensure you have Node.js v20+ and sqlite3 installed.
 
 Then, install dependencies, initialize a dev db, and start the app:
 

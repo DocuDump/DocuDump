@@ -18,3 +18,4 @@ CREATE TABLE IF NOT EXISTS shortcodes (
 -- migrate:down
 
 DROP TABLE IF EXISTS shortcodes;
+DROP TABLE IF EXISTS redirects;
