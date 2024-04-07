@@ -1,5 +1,5 @@
 import Database from "better-sqlite3";
-import { readdirSync, existsSync } from "fs";
+import * as fs from "fs";
 import * as crockford from "@/util/crockford";
 import { randomCrockfordNumber } from "@/util/randcrockford";
 import path from "path";
@@ -15,9 +15,9 @@ import path from "path";
 
 // List all migrations
 let migrationsDir = path.join(process.cwd(), "src/db/migrations");
-let migrationFiles = readdirSync(migrationsDir).filter((entry) =>
-    entry.endsWith(".sql"),
-);
+let migrationFiles = fs
+    .readdirSync(migrationsDir)
+    .filter((entry) => entry.endsWith(".sql"));
 
 // Sanity check that at least one migration file exists
 if (migrationFiles.length < 1) {
@@ -29,9 +29,8 @@ if (typeof databasePath !== "string") {
     databasePath = path.join(process.cwd(), "db.sqlite3");
 }
 
-if (!existsSync(databasePath)) {
-    throw new Error("Database not instantiated");
-}
+// Ensure database exists and is readable
+fs.accessSync(databasePath, fs.constants.F_OK | fs.constants.R_OK);
 
 export const db = new Database(databasePath, {
     fileMustExist: true,
