@@ -15,16 +15,6 @@ function PasteTab() {
     const [currentText, setCurrentText] = useState("");
     const [language, setLanguage] = useState<LanguageKey>("plaintext");
 
-    const fileExtensions: Record<LanguageKey, string> = {
-        plaintext: "txt",
-        python: "py",
-        java: "java",
-        javascript: "js",
-        typescript: "ts",
-        csharp: "cs",
-        c: "c",
-    };
-
     const languageTypes: Record<LanguageKey, string> = {
         plaintext: "text/plain",
         python: "text/x-python",
@@ -49,11 +39,7 @@ function PasteTab() {
             type: languageTypes[language],
         });
 
-        formData.append(
-            "file",
-            fileContent,
-            `file.${fileExtensions[language]}`,
-        );
+        formData.append("file", fileContent, "file.txt");
 
         try {
             const response = await uploadFile(null, formData);
