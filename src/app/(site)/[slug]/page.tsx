@@ -1,5 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import { queryShortcode } from "@/db";
+import FilePreview from "@/app/(site)/[slug]/filepreview";
 
 export default async function ShortcodeHandler({
     params,
@@ -11,8 +12,13 @@ export default async function ShortcodeHandler({
     if (result.redirect) {
         redirect(result.redirect.redirect_url);
     } else if (result.file) {
-        // TODO: handle result.file
+        return (
+            <FilePreview
+                file={result.file}
+                // Pass any other necessary props to the FilePreview component
+            />
+        );
     } else {
-        notFound();
+        return notFound();
     }
 }
