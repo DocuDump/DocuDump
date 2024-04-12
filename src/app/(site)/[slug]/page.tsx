@@ -12,12 +12,7 @@ export default async function ShortcodeHandler({
     if (result.redirect) {
         redirect(result.redirect.redirect_url);
     } else if (result.file) {
-        return (
-            <FilePreview
-                file={result.file}
-                // Pass any other necessary props to the FilePreview component
-            />
-        );
+        return <FilePreview file={result.file} />;
     } else {
         return notFound();
     }
