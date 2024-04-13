@@ -95,7 +95,7 @@ interface Redirect {
     redirect_url: string;
 }
 
-interface FileEntry {
+export interface FileEntry {
     id: number;
     sha256: string;
     file_name: string;
