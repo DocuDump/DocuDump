@@ -9,6 +9,7 @@ import OpenEye from "./logos/openeye";
 function Settings() {
     const [isOpen, setIsOpen] = useState(false);
     const [isPasswordHidden, setPasswordHidden] = useState(true);
+    const [pasteStatus, setPasteStatus] = useState("public");
 
     // TODO: #15 - Add the initial custom setting features we want to include.
     return (
@@ -64,45 +65,67 @@ function Settings() {
                     </div>
 
                     <div>
-                        <label
-                            htmlFor="paste-status"
-                            className="mb-1 ml-2 flex gap-2 text-sm font-medium text-gray-700"
-                        >
+                        <div className="mb-1 ml-2 flex gap-2 text-sm font-medium text-gray-700">
                             Paste Status
-                        </label>
-                        <select
-                            id="paste-status"
-                            className="w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm transition-colors duration-200 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                        >
-                            <option>Public</option>
-                            <option>Private</option>
-                        </select>
-                    </div>
-
-                    <div className="mb-12">
-                        <label className="mb-1 ml-2 flex gap-2 text-sm font-medium text-gray-700">
-                            Password
-                        </label>
-                        <div className="relative">
-                            <button
-                                className="absolute inset-y-0 right-3 my-auto text-gray-400 active:text-gray-600"
-                                onClick={() =>
-                                    setPasswordHidden(!isPasswordHidden)
-                                }
-                            >
-                                {isPasswordHidden ? (
-                                    <OpenEye />
-                                ) : (
-                                    <ClosedEyeLogo />
-                                )}
-                            </button>
-                            <input
-                                type={isPasswordHidden ? "password" : "text"}
-                                placeholder="Enter your password"
-                                className="block w-full rounded-lg border border-gray-300 p-2.5 text-sm transition-colors duration-200 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-                            />
+                        </div>
+                        <div className="mb-1 ml-2 flex">
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="pasteStatus"
+                                    value="public"
+                                    checked={pasteStatus === "public"}
+                                    onChange={() => setPasteStatus("public")}
+                                    className="mr-1"
+                                />
+                                Public
+                            </label>
+                        </div>
+                        <div className="mb-1 ml-2 flex">
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="pasteStatus"
+                                    value="private"
+                                    checked={pasteStatus === "private"}
+                                    onChange={() => setPasteStatus("private")}
+                                    className="mr-1"
+                                />
+                                Private
+                            </label>
                         </div>
                     </div>
+
+                    {pasteStatus === "private" && (
+                        <div>
+                            <label className="mb-1 ml-2 flex gap-2 text-sm font-medium text-gray-700">
+                                Password
+                            </label>
+                            <div className="relative">
+                                <button
+                                    type="button"
+                                    className="absolute inset-y-0 right-3 my-auto text-gray-400 active:text-gray-600"
+                                    onClick={() =>
+                                        setPasswordHidden(!isPasswordHidden)
+                                    }
+                                >
+                                    {isPasswordHidden ? (
+                                        <OpenEye />
+                                    ) : (
+                                        <ClosedEyeLogo />
+                                    )}
+                                </button>
+                                <input
+                                    type={
+                                        isPasswordHidden ? "password" : "text"
+                                    }
+                                    placeholder="Enter your password"
+                                    className="block w-full rounded-lg border border-gray-300 p-2.5 text-sm transition-colors duration-200 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                                    disabled={pasteStatus !== "private"} // Disable input for public paste
+                                />
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
