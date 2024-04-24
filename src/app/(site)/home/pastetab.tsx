@@ -1,19 +1,42 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Editor from "@monaco-editor/react";
 import Settings from "@/app/(site)/home/settings";
 import { LanguageKey } from "@/app/types";
 import { languageOptions } from "@/app/constants";
 import { uploadFile } from "@/app/actions/uploadfile";
+import QRCode from "qrcode";
+import CopyToClipboard from "@/app/(site)/home/logos/copytoclipboard";
 
 function PasteTab() {
     const [shortcode, setShortcode] = useState<{
         success?: boolean;
         message?: string;
     }>({});
+    const currentDomain =
+        typeof window !== "undefined" ? window.location.origin : "";
+    const [isCopied, setIsCopied] = useState(false);
+    const [src, setSrc] = useState<string>("");
     const [currentText, setCurrentText] = useState("");
     const [language, setLanguage] = useState<LanguageKey>("plaintext");
+
+    const copyToClipboard = (text: string) => {
+        navigator.clipboard.writeText(text);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 3000); // Reset copy status after 3 seconds so it disappears
+    };
+
+    const generate = () => {
+        const url = String(currentDomain + "/" + shortcode?.message);
+        QRCode.toDataURL(url).then(setSrc);
+    };
+
+    useEffect(() => {
+        if (shortcode?.success) {
+            generate();
+        }
+    }, [shortcode]);
 
     const languageFileExtensions: Record<LanguageKey, string> = {
         plaintext: "txt",
@@ -115,13 +138,39 @@ function PasteTab() {
                 )}
             </div>
             {shortcode && (
-                <p
-                    className={`mt-6 text-3xl ${shortcode.success ? "" : "text-red-500"}`}
-                >
-                    {shortcode.success
-                        ? `Generated Code: ${shortcode.message}`
-                        : shortcode.message}
-                </p>
+                <div>
+                    <p
+                        className={`mt-6 text-3xl ${shortcode.success ? "" : "text-red-500"}`}
+                    >
+                        {shortcode.success ? (
+                            <div>
+                                <button
+                                    onClick={() =>
+                                        copyToClipboard(
+                                            `${currentDomain}/${shortcode.message}`,
+                                        )
+                                    }
+                                    className="mt-5 h-10 rounded-lg border border-blue-500 bg-transparent px-5 py-2.5 text-sm font-medium text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white focus:outline-none"
+                                >
+                                    <CopyToClipboard />
+                                    <span>{`${currentDomain}/${shortcode.message}`}</span>
+                                </button>
+                            </div>
+                        ) : (
+                            <p className="mt-6 text-3xl text-red-500">
+                                {shortcode.message}
+                            </p>
+                        )}
+                    </p>
+                    {isCopied && (
+                        <span className="text-green-500">Copied!</span>
+                    )}
+                    {src && (
+                        <div className="flex justify-center">
+                            <img src={src} className="mt-4" />
+                        </div>
+                    )}
+                </div>
             )}
         </form>
     );

@@ -1,10 +1,35 @@
 import Settings from "@/app/(site)/home/settings";
 import { shortenURL } from "@/app/actions/shortenurl";
+import { useState, useEffect } from "react";
+import CopyToClipboard from "@/app/(site)/home/logos/copytoclipboard";
+import QRCode from "qrcode";
 
 import { useFormState } from "react-dom";
 
 export default function URLTab() {
+    const currentDomain =
+        typeof window !== "undefined" ? window.location.origin : "";
     const [shortcode, formAction] = useFormState(shortenURL, null);
+    const [isCopied, setIsCopied] = useState(false);
+    const [src, setSrc] = useState<string>("");
+
+    const copyToClipboard = (text: string) => {
+        navigator.clipboard.writeText(text);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 3000); // Reset copy status after 3 seconds so it disappears
+    };
+
+    const generate = () => {
+        const url = String(currentDomain + "/" + shortcode?.message);
+        QRCode.toDataURL(url).then(setSrc);
+    };
+
+    useEffect(() => {
+        if (shortcode?.success) {
+            generate();
+        }
+    }, [shortcode]);
+
     return (
         <form action={formAction}>
             <div className="mb-10">
@@ -55,13 +80,37 @@ export default function URLTab() {
                 Shorten
             </button>
             {shortcode && (
-                <p
-                    className={`mt-6 text-3xl ${shortcode.success ? "" : "text-red-500"}`}
-                >
-                    {shortcode.success
-                        ? `Generated Code: ${shortcode.message}`
-                        : shortcode.message}
-                </p>
+                <div>
+                    <>
+                        {shortcode.success ? (
+                            <div>
+                                <button
+                                    onClick={() =>
+                                        copyToClipboard(
+                                            `${currentDomain}/${shortcode.message}`,
+                                        )
+                                    }
+                                    className="mt-5 h-10 rounded-lg border border-blue-500 bg-transparent px-5 py-2.5 text-sm font-medium text-blue-700 hover:border-transparent hover:bg-blue-500 hover:text-white focus:outline-none"
+                                >
+                                    <CopyToClipboard />
+                                    <span>{`${currentDomain}/${shortcode.message}`}</span>
+                                </button>
+                            </div>
+                        ) : (
+                            <p className="mt-6 text-3xl text-red-500">
+                                {shortcode.message}
+                            </p>
+                        )}
+                    </>
+                    {isCopied && (
+                        <span className="text-green-500">Copied!</span>
+                    )}
+                    {src && (
+                        <div className="flex justify-center">
+                            <img src={src} className="mt-4" />
+                        </div>
+                    )}
+                </div>
             )}
         </form>
     );
