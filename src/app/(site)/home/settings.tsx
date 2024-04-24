@@ -56,6 +56,7 @@ function Settings() {
                         <select
                             id="paste-expiration"
                             className="w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm transition-colors duration-200 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                            style={{ fontFamily: "Montserrat, sans-serif" }}
                         >
                             <option>Never</option>
                             <option>One Hour</option>
@@ -73,6 +74,7 @@ function Settings() {
                         <select
                             id="paste-status"
                             className="w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm transition-colors duration-200 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                            style={{ fontFamily: "Montserrat, sans-serif" }}
                         >
                             <option>Public</option>
                             <option>Private</option>
