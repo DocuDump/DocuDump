@@ -31,7 +31,7 @@ function Settings() {
             <div
                 className={`transition-max-height duration-500 ease-in-out ${isOpen ? "max-h-96" : "max-h-0"} overflow-hidden`}
             >
-                <div className="grid grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
                     <div>
                         <label
                             htmlFor="title"
@@ -64,7 +64,7 @@ function Settings() {
                         </select>
                     </div>
 
-                    <div>
+                    <div className="mb-8">
                         <div className="mb-1 ml-2 flex gap-2 text-sm font-medium text-gray-700">
                             Paste Status
                         </div>

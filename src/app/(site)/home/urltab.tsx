@@ -59,8 +59,15 @@ export default function URLTab() {
                     </span>
                 </label>
 
+                <label
+                    htmlFor="custom-url"
+                    className="y-2.5 block rounded-l-md px-1 pb-1 pt-2 text-left text-gray-400 sm:hidden"
+                >
+                    docudump.url/
+                </label>
+
                 <div className="flex items-center rounded-md border">
-                    <div className="rounded-l-md border bg-gray-50 px-3 py-2.5 text-gray-400">
+                    <div className="hidden rounded-l-md border bg-gray-50 px-3 py-2.5 text-gray-400 sm:block">
                         docudump.url/
                     </div>
                     <input
