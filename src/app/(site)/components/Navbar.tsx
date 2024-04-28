@@ -1,20 +1,20 @@
 import Link from "next/link";
+import Image from "next/image";
 import { IoSettingsSharp } from "react-icons/io5";
 import { MdAccountCircle } from "react-icons/md";
 import styles from "./Navbar.module.css";
+import logo from "../home/logos/logo.png";
+
 
 function Navbar() {
     return (
         <nav className="inset-x-0 top-0 flex h-16 items-center justify-between bg-blue-500 text-white shadow-sm md:h-20">
             <div className="px-4 md:px-8">
-                {/* TODO - 20: Add a logo */}
-
-                <Link
-                    href="/home"
-                    className="text-lg font-semibold hover:text-gray-300 md:text-2xl"
-                >
-                    DocuDump
+                <div className="flex gap-2 items-center">
+                <Link href="/home" passHerf>
+                    <Image width={200} height={50} src={logo} alt="Logo" />
                 </Link>
+                </div>
             </div>
             <div className="flex items-center justify-between gap-3 md:gap-8">
                 <Link
