@@ -5,15 +5,14 @@ import { MdAccountCircle } from "react-icons/md";
 import styles from "./Navbar.module.css";
 import logo from "../home/logos/logo.png";
 
-
 function Navbar() {
     return (
         <nav className="inset-x-0 top-0 flex h-16 items-center justify-between bg-blue-500 text-white shadow-sm md:h-20">
             <div className="px-4 md:px-8">
-                <div className="flex gap-2 items-center">
-                <Link href="/home" passHerf>
-                    <Image width={200} height={50} src={logo} alt="Logo" />
-                </Link>
+                <div className="flex items-center gap-2">
+                    <Link href="/home" passHerf>
+                        <Image width={200} height={50} src={logo} alt="Logo" />
+                    </Link>
                 </div>
             </div>
             <div className="flex items-center justify-between gap-3 md:gap-8">
