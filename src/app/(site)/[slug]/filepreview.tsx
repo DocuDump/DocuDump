@@ -8,12 +8,22 @@ const FilePreview: React.FC<{ file: FileEntry }> = ({ file }) => {
     const { slug } = useParams();
     const isZip = file.mime_type === "application/zip";
     const isWord = file.mime_type === "application/msword";
-    const isExcel = file.mime_type === "application/vnd.ms-excel" || file.mime_type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-    const isPowerPoint = file.mime_type === "application/vnd.ms-powerpoint" || file.mime_type === "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+    const isExcel =
+        file.mime_type === "application/vnd.ms-excel" ||
+        file.mime_type ===
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    const isPowerPoint =
+        file.mime_type === "application/vnd.ms-powerpoint" ||
+        file.mime_type ===
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation";
     const isRAR = file.mime_type === "application/x-rar-compressed";
     const isTar = file.mime_type === "application/x-tar";
     const is7z = file.mime_type === "application/x-7z-compressed";
-    const isExecutable = file.mime_type === "application/octet-stream" || file.mime_type === "application/x-msdownload" || file.mime_type === "application/x-executable" || file.mime_type === "application/x-msdos-program";
+    const isExecutable =
+        file.mime_type === "application/octet-stream" ||
+        file.mime_type === "application/x-msdownload" ||
+        file.mime_type === "application/x-executable" ||
+        file.mime_type === "application/x-msdos-program";
 
     return (
         <>
@@ -21,7 +31,14 @@ const FilePreview: React.FC<{ file: FileEntry }> = ({ file }) => {
                 <h2 className="my-4 text-2xl font-bold">Slug: {slug}</h2>
                 {file.mime_type.startsWith("text") ||
                 file.mime_type.startsWith("application") ? (
-                    isZip || isWord || isExcel || isPowerPoint || isRAR || isTar || is7z || isExecutable ? (
+                    isZip ||
+                    isWord ||
+                    isExcel ||
+                    isPowerPoint ||
+                    isRAR ||
+                    isTar ||
+                    is7z ||
+                    isExecutable ? (
                         <p>Unable to preview this file type.</p>
                     ) : (
                         <iframe
@@ -31,7 +48,6 @@ const FilePreview: React.FC<{ file: FileEntry }> = ({ file }) => {
                             title={file.file_name}
                         />
                     )
-                    
                 ) : file.mime_type.startsWith("image") ? (
                     <img
                         src={`/raw/${slug}`}
