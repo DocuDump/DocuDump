@@ -6,19 +6,41 @@ import Link from "next/link";
 
 const FilePreview: React.FC<{ file: FileEntry }> = ({ file }) => {
     const { slug } = useParams();
+    const ALLOWED_APPLICATION_IFRAME_MIME_TYPES = [
+        // Text-based files
+        "application/json",
+        "text/html",
+        "text/plain",
+        "text/css",
 
+        // PDF
+        "application/pdf",
+    ];
+    console.log("MIME Type:", file.mime_type);
+    console.log(
+        "MIME Type approve:",
+        ALLOWED_APPLICATION_IFRAME_MIME_TYPES.includes(
+            file.mime_type.split(";")[0].trim(),
+        ),
+    );
     return (
         <>
             <div className="mx-auto flex max-w-[90%] flex-col items-center justify-center">
                 <h2 className="my-4 text-2xl font-bold">Slug: {slug}</h2>
                 {file.mime_type.startsWith("text") ||
                 file.mime_type.startsWith("application") ? (
-                    <iframe
-                        src={`/raw/${slug}`}
-                        className="w-full max-w-[800px] border-2"
-                        height="500"
-                        title={file.file_name}
-                    />
+                    ALLOWED_APPLICATION_IFRAME_MIME_TYPES.includes(
+                        file.mime_type.split(";")[0].trim(),
+                    ) ? (
+                        <iframe
+                            src={`/raw/${slug}`}
+                            className="w-full max-w-[800px] border-2"
+                            height="500"
+                            title={file.file_name}
+                        />
+                    ) : (
+                        <p>Unable to preview this file type.</p>
+                    )
                 ) : file.mime_type.startsWith("image") ? (
                     <img
                         src={`/raw/${slug}`}
