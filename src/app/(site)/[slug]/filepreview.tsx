@@ -16,13 +16,6 @@ const FilePreview: React.FC<{ file: FileEntry }> = ({ file }) => {
         // PDF
         "application/pdf",
     ];
-    console.log("MIME Type:", file.mime_type);
-    console.log(
-        "MIME Type approve:",
-        ALLOWED_APPLICATION_IFRAME_MIME_TYPES.includes(
-            file.mime_type.split(";")[0].trim(),
-        ),
-    );
     return (
         <>
             <div className="mx-auto flex max-w-[90%] flex-col items-center justify-center">
