@@ -10,7 +10,7 @@ function Navbar() {
         <nav className="inset-x-0 top-0 flex h-16 items-center justify-between bg-blue-500 text-white shadow-sm md:h-20">
             <div className="px-4 md:px-8">
                 <div className="flex items-center gap-2">
-                    <Link href="/home" passHerf>
+                    <Link href="/home">
                         <Image width={200} height={50} src={logo} alt="Logo" />
                     </Link>
                 </div>
