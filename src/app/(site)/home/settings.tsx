@@ -64,7 +64,7 @@ function Settings() {
                         </select>
                     </div>
 
-                    <div className="mb-8">
+                    <div>
                         <div className="mb-1 ml-2 flex gap-2 text-sm font-medium text-gray-700">
                             Paste Status
                         </div>

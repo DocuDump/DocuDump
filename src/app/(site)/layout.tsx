@@ -10,7 +10,9 @@ export default function SiteLayout({
         <section>
             <div className={`flex min-h-screen flex-col`}>
                 <Navbar />
-                <main className="mb-20 flex-grow">{children}</main>
+                <main className="mb-20 flex-grow overflow-auto">
+                    {children}
+                </main>
                 <Footer />
             </div>
         </section>

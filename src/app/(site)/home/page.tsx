@@ -25,7 +25,7 @@ function Home() {
                                         e.preventDefault(); // Prevent the link from navigating
                                         changeTab(tab);
                                     }}
-                                    className={`inline-block rounded-t-lg border-b-2 px-0 py-2 text-lg sm:text-xl ${activeTab === tab ? "border-blue-600 text-blue-600 dark:border-blue-500 dark:text-blue-500" : "border-transparent text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-100"}`}
+                                    className={`inline-block rounded-t-lg border-b-2 px-0 py-2 text-lg sm:p-4 sm:text-xl ${activeTab === tab ? "border-blue-600 text-blue-600 dark:border-blue-500 dark:text-blue-500" : "border-transparent text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-100"}`}
                                 >
                                     {tab}
                                 </a>
