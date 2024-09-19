@@ -9,7 +9,7 @@
         "lint": "next lint",
         "prettier": "npx prettier . --check",
         "prettier:fix": "npm run prettier -- --write",
-        "compile": "next experimental-compile"
+        "compile": "next build --experimental-build-mode compile"
     },
     "dependencies": {
         "@monaco-editor/react": "^4.6.0",
